@@ -4,7 +4,8 @@ return {name, symbol, isWinner, number};
 }
 // add a function in order to create private functions and variables
 let game = (() => {
-    let result = null;
+    let scores = [0, 0];
+    let result;
     let roundCount = 0;
     let isThereAWinner = false;
     let board = [
@@ -21,6 +22,7 @@ let game = (() => {
         const answer = prompt(`Player${player.number} where to play ? ([row] [column])`);
         const playSpot = answer.split(" ");
         board[playSpot[0] - 1][playSpot[1] - 1] = player.symbol;
+        roundCount++;
 
         if (player.number === 1) {
             return player2;
@@ -36,11 +38,25 @@ let game = (() => {
     }
 
     const gameResult = () => {
-
+        for (const row of board) {
+            if (row.every(position => position === "X")){
+                player1.isWinner = true;
+                return true;
+            } else if (row.every(position => position === "O")) {
+                player2.isWinner = true;
+                return true;
+            }
+        }
     };
 
     const finishGame = () => {
-
+        if (player1.isWinner) {
+            scores[0]++;
+            result = player1;
+        } else {
+            scores[1]++;
+            result = player2;
+        }
     };
 
     const playGame = () => {
@@ -62,7 +78,7 @@ let game = (() => {
             }
         }
     }
-    return {playGame, result, displayBoard};
+    return {playGame, displayBoard, scores};
 })();
 // first i'll get the user input from console
 // in other words one player's turn at a time
