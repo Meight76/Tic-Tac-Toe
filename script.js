@@ -7,11 +7,13 @@ let game = (() => {
     // the scores for all games
     let scores = [0, 0];
     // who won the last game
-    let result;
+    let result = "none";
+
+    let currentPlayerTurn;
     // count round for game
     let roundCount = 0;
-    // a winner for current game
-    let isThereAWinner = false;
+    // a winner for current game, it's being updated in gameResult
+    let isGameOver = false;
     // the board the will be updated in almost all functions
     let board = [
         [" ", " ", " "],
@@ -37,22 +39,21 @@ let game = (() => {
             playSpot = answer.split(" ");
             // call the helper function for validation
             validAnswer = validatePrompt(Number(playSpot[0]), Number(playSpot[1]));
-
-            function validatePrompt(rowIndex, columnIndex) {
-                // if it's not a whole number;
-                // make sure to not index out of array;
-                // make sure space is free
-                if (!Number.isInteger(rowIndex) || !Number.isInteger(columnIndex)) {
-                    return false;
-                } else if (rowIndex > 3 || rowIndex < 1 ||columnIndex > 3 || columnIndex < 1) {
-                    return false;
-                    } else if (board[rowIndex - 1][columnIndex - 1] === "X" || board[rowIndex - 1][columnIndex - 1] === "O") {
-                        return false;
-                    }
-                    // every thing else being false it return true
-                    return true;
-                }
         }
+        function validatePrompt(rowIndex, columnIndex) {
+            // if it's not a whole number;
+            // make sure to not index out of array;
+            // make sure space is free
+            if (!Number.isInteger(rowIndex) || !Number.isInteger(columnIndex)) {
+                return false;
+            } else if (rowIndex > 3 || rowIndex < 1 ||columnIndex > 3 || columnIndex < 1) {
+                return false;
+                } else if (board[rowIndex - 1][columnIndex - 1] === "X" || board[rowIndex - 1][columnIndex - 1] === "O") {
+                    return false;
+                }
+                // every thing else being false it return true
+                return true;
+            }
         // after validation i mark the position with player symbol
         board[playSpot[0] - 1][playSpot[1] - 1] = player.symbol;
         roundCount++;
@@ -72,14 +73,25 @@ let game = (() => {
         }
     }
 
+    const forgetPlayers = () => {
+        player1 = null;
+        player2 = null;
+    }
+
+    const displayScores = () => {
+        console.log(`(scores) player 1: ${scores[0]} player 2: ${scores[1]}`);
+    }
     // must return true for indicating that has a winner
     // also set the current player winner property .isWinner as true
     const gameResult = () => {
         if (checkRows(player1, board) || checkRows(player2, board)) {
+            isGameOver = true;
             return true;
         } else if (checkColumns(player1) || checkColumns(player2)) {
+            isGameOver = true;
             return true;
         } else if (checkDiagonals(player1) || checkDiagonals(player2)) {
+            isGameOver = true;
             return true;
         }
 
@@ -109,14 +121,48 @@ let game = (() => {
         }
     };
 
-    const finishGame = () => {
-        if (player1.isWinner) {
+    const clearBoard = () => {
+        for (let i = 0; i < board.length; i++) {
+            for (let y = 0; y < board[i].length; y++) {
+                board[i][y] = " ";
+            }
+        }
+    };
+
+    const clearWinner = () => {
+        player1.isWinner = false;
+        player2.isWinner = false;
+    }
+
+    const getBoard = () => {
+        return board.map(row => row.slice());
+    }
+
+    // does return result as "tie" or player object of the winner
+    // clean all the game info for a next game
+    // allow user to quit game
+    const finishGame = (tie) => {
+        if (tie) {
+            result = "tie";
+        }
+        else if (player1.isWinner) {
             scores[0]++;
             result = player1;
         } else {
             scores[1]++;
             result = player2;
         }
+        if (confirm("Do you want to continue to play ?")) {
+            isGameOver = false;
+            clearBoard()
+            clearWinner();
+            roundCount = 0;
+            return;
+        }
+        displayScores();
+        clearBoard();
+        clearWinner();
+        roundCount = 0;
     };
 
     const playGame = () => {
@@ -124,10 +170,10 @@ let game = (() => {
             player1 = players(prompt("Player 1 Name:"), "X", 1);
             player2 = players(prompt("Player 2 Name:"), "O", 2);
         }
-        let currentPlayerTurn = player1;
+        currentPlayerTurn = player1;
 
 
-        while (!isThereAWinner) {
+        while (!isGameOver) {
             currentPlayerTurn = playTurn(currentPlayerTurn);
             displayBoard();
 
@@ -135,17 +181,20 @@ let game = (() => {
 
                 if (gameResult()) {
                     finishGame();
+                    continue;
+                } else if (roundCount === 9) {
+                    finishGame(true);
+                    continue;
                 }
+
             }
         }
     }
-    return {playGame, displayBoard, scores};
+    const getScores = () => {
+        return scores.slice();
+    }
+    const getResult = () => {
+        return result;
+    }
+    return {playGame, displayBoard, getScores, displayScores, getResult, clearBoard, forgetPlayers, getBoard};
 })();
-// first i'll get the user input from console
-// in other words one player's turn at a time
-
-// then i'll computate the gameboard into an array
-// that where i'm saving and updating
-
-// after the third round i must start checking for a winner
-// i shall check all rows
