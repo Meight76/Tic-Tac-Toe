@@ -7,7 +7,6 @@ let game = (() => {
     let result = null;
     let roundCount = 0;
     let isThereAWinner = false;
-    let currentPlayerTurn = player1;
     let board = [
         [0, 0, 0],
         [0, 0, 0],
@@ -30,6 +29,12 @@ let game = (() => {
         }
     };
 
+    const displayBoard = () => {
+        for (const row of board) {
+            console.log(`|${row.join("|")}|`);
+        }
+    }
+
     const gameResult = () => {
 
     };
@@ -43,6 +48,8 @@ let game = (() => {
             player1 = players(prompt("Player 1 Name:"), "X", 1);
             player2 = players(prompt("Player 2 Name:"), "O", 2);
         }
+        let currentPlayerTurn = player1;
+
 
         while (!isThereAWinner) {
             currentPlayerTurn = playTurn(currentPlayerTurn);
@@ -55,7 +62,7 @@ let game = (() => {
             }
         }
     }
-    return {playGame, result}
+    return {playGame, result, displayBoard};
 })();
 // first i'll get the user input from console
 // in other words one player's turn at a time
