@@ -7,7 +7,46 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
-
+    <div class="header">
+        <span>Tic Tac Toe</span>
+    </div>
+    <main class="game-screen">
+        <div class="game-boarder">
+            <div class="position"></div>
+            <div class="position"></div>
+            <div class="position"></div>
+            <div class="position"></div>
+            <div class="position"></div>
+            <div class="position"></div>
+            <div class="position"></div>
+            <div class="position"></div>
+            <div class="position"></div>
+        </div>
+        <div class="boarder-buttons">
+            <button class="start-button" command="show-modal" commandfor="players-set">Start</button>
+            <button class="restart-button">Restart</button>
+        </div>
+        <dialog id="players-set" closedby="any">
+            <div class="top-dialog">
+                <h1>Game set!</h1>
+                <button class="close-button" command="close" commandfor="players-set">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>close-circle</title><path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" /></svg>
+                </button>
+            </div>
+            <form>
+                <div class="player">
+                    <label for="name-1">Player 1 Nick</label>
+                    <input type="text" name="name-1" id="name-1" required autofocus>
+                </div>
+                <div class="player">
+                    <label for="name-2">Player 2 Nick</label>
+                    <input type="text" name="name-2" id="name-2" required>
+                </div>
+                <button class="confirm-players-set">Confirm</button>
+            </form>
+        </dialog>
+    </main>
+    <footer class="footer">Just a project, i did not meant anything kk</footer>
     <script src="script.js"></script>
 </body>
 </html>
