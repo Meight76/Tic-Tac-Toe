@@ -163,23 +163,6 @@ let game = (() => {
         currentPlayerTurn = player1;
     }
 
-    const playGame = () => {
-        while (!isGameOver) {
-
-            if (roundCount >= 3) {
-
-                if (gameResult()) {
-                    finishGame();
-                    continue;
-                } else if (roundCount === 9) {
-                    finishGame(true);
-                    continue;
-                }
-
-            }
-        }
-    }
-
     const restartScores = () => {
         scores = [0, 0];
     }
@@ -196,7 +179,7 @@ let game = (() => {
     const getCurrentTurn = () => {
         return currentPlayerTurn;
     }
-    return {playGame, gameResult, restartScores,getRoundCount,finishGame, clearBoard, initiatePlayers, getCurrentTurn, displayBoard, getScores, displayScores, getResult, clearBoard, forgetPlayers, getBoard, playTurn, validateInput};
+    return {gameResult, restartScores,getRoundCount,finishGame, clearBoard, initiatePlayers, getCurrentTurn, displayBoard, getScores, displayScores, getResult, clearBoard, forgetPlayers, getBoard, playTurn, validateInput};
 })();
 
 let graphicUserInterface = (() => {
@@ -215,10 +198,10 @@ let graphicUserInterface = (() => {
     confirmStartButton.addEventListener("click", (e) => {
         e.preventDefault();
         dialog.close();
-        if (inputPlayer1 === "") {
+        if (inputPlayer1.value === "") {
             inputPlayer1.value = "player 1";
         }
-        if (inputPlayer2 === "") {
+        if (inputPlayer2.value === "") {
             inputPlayer2.value = "player 2";
         }
         game.initiatePlayers(inputPlayer1, inputPlayer2);
