@@ -26,45 +26,34 @@ let game = (() => {
 
     // use the player object passed as parameter and play the round for him
     // return the next player's turn
-    const playTurn = (player) => {
-        let validAnswer = false;
-        // a variable that has the current position to mark in the round
-        let playSpot;
-        // keep prompting the player while answer is not valid
-        // valid i mean valid position index and the space indexed is free
-        // for validation i use a helper function
-        while (!validAnswer) {
-            const answer = prompt(`Player${player.number} where to play ? ([row] [column])`);
-            // turn prompt into an array of two indexes (hopefully!), they are string (remember!)
-            playSpot = answer.split(" ");
-            // call the helper function for validation
-            validAnswer = validatePrompt(Number(playSpot[0]), Number(playSpot[1]));
-        }
-        function validatePrompt(rowIndex, columnIndex) {
-            // if it's not a whole number;
-            // make sure to not index out of array;
-            // make sure space is free
-            if (!Number.isInteger(rowIndex) || !Number.isInteger(columnIndex)) {
-                return false;
-            } else if (rowIndex > 3 || rowIndex < 1 ||columnIndex > 3 || columnIndex < 1) {
-                return false;
-                } else if (board[rowIndex - 1][columnIndex - 1] === "X" || board[rowIndex - 1][columnIndex - 1] === "O") {
-                    return false;
-                }
-                // every thing else being false it return true
-                return true;
-            }
-        // after validation i mark the position with player symbol
-        board[playSpot[0] - 1][playSpot[1] - 1] = player.symbol;
+    // you must pass the position to play in its arguments
+    const playTurn = (player, answerArray) => {
+
+        board[answerArray[0] - 1][answerArray[1] - 1] = player.symbol;
         roundCount++;
 
         // returns the oppositive player as the next player turn
         if (player.number === 1) {
-            return player2;
+            currentPlayerTurn = player2;
         } else {
-            return player1;
+            currentPlayerTurn =  player1;
         }
     };
+
+    function validateInput(rowIndex, columnIndex) {
+        // if it's not a whole number;
+        // make sure to not index out of array;
+        // make sure space is free
+        if (!Number.isInteger(rowIndex) || !Number.isInteger(columnIndex)) {
+            return false;
+        } else if (rowIndex > 3 || rowIndex < 1 ||columnIndex > 3 || columnIndex < 1) {
+            return false;
+            } else if (board[rowIndex - 1][columnIndex - 1] === "X" || board[rowIndex - 1][columnIndex - 1] === "O") {
+                return false;
+            }
+            // every thing else being false it return true
+            return true;
+        }
 
     // pretty straight forward i think
     const displayBoard = () => {
@@ -141,7 +130,7 @@ let game = (() => {
     // does return result as "tie" or player object of the winner
     // clean all the game info for a next game
     // allow user to quit game
-    const finishGame = (tie) => {
+    const finishGame = (tie, isRestart) => {
         if (tie) {
             result = "tie";
         }
@@ -152,7 +141,7 @@ let game = (() => {
             scores[1]++;
             result = player2;
         }
-        if (confirm("Do you want to continue to play ?")) {
+        if (!isRestart && confirm("Do you want to continue to play ?")) {
             isGameOver = false;
             clearBoard()
             clearWinner();
@@ -166,17 +155,16 @@ let game = (() => {
         roundCount = 0;
     };
 
-    const playGame = () => {
+    const initiatePlayers = (input1, input2) => {
         if (player1 === undefined || player1 === null) {
-            player1 = players(prompt("Player 1 Name:"), "X", 1);
-            player2 = players(prompt("Player 2 Name:"), "O", 2);
+            player1 = players(input1.value, "X", 1);
+            player2 = players(input2.value, "O", 2);
         }
         currentPlayerTurn = player1;
+    }
 
-
+    const playGame = () => {
         while (!isGameOver) {
-            currentPlayerTurn = playTurn(currentPlayerTurn);
-            displayBoard();
 
             if (roundCount >= 3) {
 
@@ -191,11 +179,102 @@ let game = (() => {
             }
         }
     }
+
+    const restartScores = () => {
+        scores = [0, 0];
+    }
+
+    const getRoundCount = () => {
+        return roundCount;
+    }
     const getScores = () => {
         return scores.slice();
     }
     const getResult = () => {
         return result;
     }
-    return {playGame, displayBoard, getScores, displayScores, getResult, clearBoard, forgetPlayers, getBoard};
+    const getCurrentTurn = () => {
+        return currentPlayerTurn;
+    }
+    return {playGame, gameResult, restartScores,getRoundCount,finishGame, clearBoard, initiatePlayers, getCurrentTurn, displayBoard, getScores, displayScores, getResult, clearBoard, forgetPlayers, getBoard, playTurn, validateInput};
+})();
+
+let graphicUserInterface = (() => {
+    const boarderInterface = document.querySelector(".game-boarder");
+    const dialog = document.querySelector("#players-set");
+    const confirmStartButton = document.querySelector(".confirm-players-set");
+    const restartButton = document.querySelector(".restart-button");
+    const inputPlayer1 = document.querySelector("#name-1");
+    const inputPlayer2 = document.querySelector("#name-2");
+    const showPlayer1Name = document.querySelector("#player-name-1");
+    const showPlayer2Name = document.querySelector("#player-name-2");
+    const showPlayer1Score = document.querySelector("#player-score-1");
+    const showPlayer2Score = document.querySelector("#player-score-2");
+    const showTurn = document.querySelector("#show-turn");
+
+    confirmStartButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        dialog.close();
+        if (inputPlayer1 === "") {
+            inputPlayer1.value = "player 1";
+        }
+        if (inputPlayer2 === "") {
+            inputPlayer2.value = "player 2";
+        }
+        game.initiatePlayers(inputPlayer1, inputPlayer2);
+        showPlayer1Name.textContent = inputPlayer1.value;
+        showPlayer2Name.textContent = inputPlayer2.value;
+        showTurn.textContent = game.getCurrentTurn().name + " " + game.getCurrentTurn().symbol;
+        refreshScore();
+
+        boarderInterface.addEventListener("click", (e) => {
+            if (e.target.matches("button")) {
+                const placeToPlay = e.target.value.split(" ");
+                const numberIndexes = placeToPlay.map((item) => {
+                    return Number(item);
+                })
+                if (game.validateInput(numberIndexes[0], numberIndexes[1]))
+                game.playTurn(game.getCurrentTurn(), numberIndexes);
+                refreshBoarder();
+                showTurn.textContent = game.getCurrentTurn().name + " " + game.getCurrentTurn().symbol;
+
+                if (game.getRoundCount() >= 3) {
+                    if (game.gameResult()) {
+                        game.finishGame();
+                        refreshScore();
+                        refreshBoarder();
+                    } else if (game.getRoundCount() === 9) {
+                        game.finishGame(true);
+                        refreshBoarder();
+                    }
+                }
+            }
+        });
+        restartButton.addEventListener("click", () => {
+        game.finishGame(true, true);
+        refreshBoarder();
+        game.restartScores();
+        refreshScore();
+    });
+    });
+
+    const refreshBoarder = () => {
+        const boarder = game.getBoard();
+        const positions = document.querySelectorAll(".position");
+        for (const position of positions) {
+            position.textContent = " ";
+            position.classList.remove("x-player", "o-player");
+            const positionIndex = position.value.split(" ");
+            if (boarder[positionIndex[0] - 1][positionIndex[1] - 1] === "X") {
+                position.classList.add("x-player");
+                position.textContent = "X";
+            } else if (boarder[positionIndex[0] - 1][positionIndex[1] - 1] === "O") {
+                position.classList.add("o-player");
+                position.textContent = "O";
+            }
+        }
+    };
+    const refreshScore = () => {
+        [showPlayer1Score.textContent, showPlayer2Score.textContent] = game.getScores();
+    };
 })();

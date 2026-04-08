@@ -95,7 +95,7 @@ button:hover {
         background-color: var(--gray-100);
     }
 
-    .boarder-buttons {
+    .boarder-side {
         align-self: center;
         gap: 10px;
         display: flex;
