@@ -162,6 +162,7 @@ let game = (() => {
         displayScores();
         clearBoard();
         clearWinner();
+        currentPlayerTurn = player1;
         roundCount = 0;
     };
 
