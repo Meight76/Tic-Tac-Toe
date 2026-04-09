@@ -344,5 +344,14 @@ form {
 
         }
     }
+}
 
+.x-player {
+    font-size: 7em;
+    color: var(--orange-500);
+}
+
+.o-player {
+    font-size: 7em;
+    color: var(--pink-400);
 }
