@@ -288,3 +288,5 @@ let graphicUserInterface = (() => {
 
     return {callWinnerModal};
 })();
+
+graphicUserInterface.callWinnerModal();

@@ -30,6 +30,11 @@
 
 * {
     font-family: inherit;
+
+    &:focus-visible {
+        outline-color: var(--orange-500);
+    }
+
 }
 
 body {
@@ -241,4 +246,76 @@ form {
     &::backdrop {
         background-color: hsl(0 0% 0% / 0.5);
     }
+}
+
+#winner-result[open] {
+    display: flex;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    width: min(50%, 400px);
+
+    &::backdrop {
+        background-color: hsl(0 0% 0% / 0.4);
+    }
+
+    h1 {
+        display: inline-block;
+        position: relative;
+        &::before {
+            position: absolute;
+            content: "";
+            bottom: -10px;
+            height: 2px;
+            background-color: var(--orange-200);
+            width: 100%;
+        }
+
+        span {
+            color:var(--orange-200);
+        }
+    }
+
+    .winner-result-buttons {
+        display: flex;
+        justify-content: space-between;
+
+        #dialog-restart-button {
+            background-color: var(--pink-400);
+            border: none;
+            color: var(--white-100);
+            padding: 5px 15px 5px 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px hsl(0 0% 0% / 0.3);
+
+            &:hover {
+                background-color: var(--pink-200);
+            }
+
+            &:active {
+                background-color: var(--pink-100);
+            }
+
+        }
+
+        #dialog-continue-button {
+            background-color: var(--orange-400);
+            border: none;
+            color: var(--white-100);
+            padding: 5px 20px 5px 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px hsl(0 0% 0% / 0.3);
+
+            &:hover {
+                background-color: var(--orange-200);
+            }
+
+            &:active {
+                background-color: var(--orange-100);
+            }
+
+        }
+    }
+
+    flex-direction: column;
 }
