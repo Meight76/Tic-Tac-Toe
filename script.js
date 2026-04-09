@@ -236,7 +236,7 @@ let graphicUserInterface = (() => {
             }
         });
 
-        restartButton.addEventListener("click", restartGame());
+        restartButton.addEventListener("click", restartGame);
         winnerDialogRestart.addEventListener("click", () => {
             restartGame();
             winnerDialog.close();

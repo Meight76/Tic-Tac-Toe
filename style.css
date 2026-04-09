@@ -17,7 +17,7 @@
 
 @font-face {
     font-family: "custom";
-    src: url(/fonts/variable/Outfit-VariableFont_wght.woff2);
+    src: url("/fonts/variable/Outfit-VariableFont_wght.woff2") format("woff2");
 
     font-weight: 100 900;
 }
