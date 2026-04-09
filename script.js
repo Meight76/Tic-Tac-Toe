@@ -194,6 +194,7 @@ let graphicUserInterface = (() => {
     const showPlayer1Score = document.querySelector("#player-score-1");
     const showPlayer2Score = document.querySelector("#player-score-2");
     const showTurn = document.querySelector("#show-turn");
+    const showTurnSymbol = document.querySelector("#show-turn-symbol");
 
     confirmStartButton.addEventListener("click", (e) => {
         e.preventDefault();
@@ -206,7 +207,8 @@ let graphicUserInterface = (() => {
         }
         game.initiatePlayers(inputPlayer1, inputPlayer2);
         refreashPlayer();
-        showTurn.textContent = game.getCurrentTurn().name + " " + game.getCurrentTurn().symbol;
+        showTurn.textContent = game.getCurrentTurn().name;
+        showTurnSymbol.textContent = game.getCurrentTurn().symbol;
         refreshScore();
 
         boarderInterface.addEventListener("click", (e) => {
@@ -218,7 +220,8 @@ let graphicUserInterface = (() => {
                 if (game.validateInput(numberIndexes[0], numberIndexes[1]))
                 game.playTurn(game.getCurrentTurn(), numberIndexes);
                 refreshBoarder();
-                showTurn.textContent = game.getCurrentTurn().name + " " + game.getCurrentTurn().symbol;
+                showTurn.textContent = game.getCurrentTurn().name;
+                showTurnSymbol.textContent = game.getCurrentTurn().symbol;
 
                 if (game.getRoundCount() >= 3) {
                     if (game.gameResult()) {
@@ -289,4 +292,3 @@ let graphicUserInterface = (() => {
     return {callWinnerModal};
 })();
 
-graphicUserInterface.callWinnerModal();

@@ -138,6 +138,21 @@ button:hover {
                 background-color: var(--pink-100);
             }
         }
+
+        .turn {
+            color: var(--orange-400);
+            font-size: 20px;
+
+            :first-child {
+                color: black;
+            }
+
+            :nth-child(2) {
+                color:var(--pink-400);
+            }
+
+        }
+
     }
 }
 
@@ -251,6 +266,7 @@ form {
 #winner-result[open] {
     display: flex;
     justify-content: center;
+    flex-direction: column;
     border: none;
     border-radius: 8px;
     width: min(50%, 400px);
@@ -317,5 +333,4 @@ form {
         }
     }
 
-    flex-direction: column;
 }
