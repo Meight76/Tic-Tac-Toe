@@ -141,12 +141,8 @@ let game = (() => {
             scores[1]++;
             result = player2;
         }
-        if (!isRestart && confirm("Do you want to continue to play ?")) {
-            isGameOver = false;
-            clearBoard()
-            clearWinner();
-            roundCount = 0;
-            return;
+        if (!isRestart) {
+            graphicUserInterface.callWinnerModal();
         }
         displayScores();
         clearBoard();
@@ -184,9 +180,13 @@ let game = (() => {
 
 let graphicUserInterface = (() => {
     const boarderInterface = document.querySelector(".game-boarder");
+    const winnerDialog = document.querySelector("#winner-result");
+    const winnerDialogShowWinner = document.querySelector(".player-winner");
+    const winnerDialogContinueButton = document.querySelector("#dialog-continue-button");
     const dialog = document.querySelector("#players-set");
     const confirmStartButton = document.querySelector(".confirm-players-set");
     const restartButton = document.querySelector(".restart-button");
+    const winnerDialogRestart = document.querySelector("#dialog-restart-button");
     const inputPlayer1 = document.querySelector("#name-1");
     const inputPlayer2 = document.querySelector("#name-2");
     const showPlayer1Name = document.querySelector("#player-name-1");
@@ -205,8 +205,7 @@ let graphicUserInterface = (() => {
             inputPlayer2.value = "player 2";
         }
         game.initiatePlayers(inputPlayer1, inputPlayer2);
-        showPlayer1Name.textContent = inputPlayer1.value;
-        showPlayer2Name.textContent = inputPlayer2.value;
+        refreashPlayer();
         showTurn.textContent = game.getCurrentTurn().name + " " + game.getCurrentTurn().symbol;
         refreshScore();
 
@@ -233,13 +232,34 @@ let graphicUserInterface = (() => {
                 }
             }
         });
-        restartButton.addEventListener("click", () => {
-        game.finishGame(true, true);
-        refreshBoarder();
-        game.restartScores();
-        refreshScore();
+
+        restartButton.addEventListener("click", restartGame());
+        winnerDialogRestart.addEventListener("click", () => {
+            restartGame();
+            winnerDialog.close();
+        });
+        winnerDialogContinueButton.addEventListener("click", () => {
+            winnerDialog.close();
+        })
+
+        function restartGame() {
+            game.finishGame(true, true);
+            refreshBoarder();
+            game.restartScores();
+            refreshScore();
+        }
     });
-    });
+
+    const callWinnerModal = () => {
+        winnerDialog.showModal();
+        const result = game.getResult();
+        if (typeof result === "object") {
+            winnerDialogShowWinner.textContent = game.getResult().name;
+        } else {
+            winnerDialogShowWinner.textContent = game.getResult();
+        }
+
+    };
 
     const refreshBoarder = () => {
         const boarder = game.getBoard();
@@ -260,4 +280,11 @@ let graphicUserInterface = (() => {
     const refreshScore = () => {
         [showPlayer1Score.textContent, showPlayer2Score.textContent] = game.getScores();
     };
+
+    function refreashPlayer() {
+        showPlayer1Name.textContent = inputPlayer1.value;
+        showPlayer2Name.textContent = inputPlayer2.value;
+    }
+
+    return {callWinnerModal};
 })();
