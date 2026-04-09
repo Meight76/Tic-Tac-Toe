@@ -140,7 +140,7 @@ button:hover {
         }
 
         .turn {
-            color: var(--orange-400);
+            color: var(--orange-500);
             font-size: 20px;
 
             :first-child {
@@ -148,6 +148,18 @@ button:hover {
             }
 
             :nth-child(2) {
+                color:var(--pink-400);
+            }
+
+
+        }
+
+        .player-name {
+            :first-child {
+                color: var(--orange-200);
+            }
+
+            .scores {
                 color:var(--pink-400);
             }
 
